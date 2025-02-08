@@ -3,10 +3,17 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 
+from utils.data_store import set_filters
+from utils.get_filters import extract_filters
 from utils.linkedin import *
+
+filters_data = extract_filters()
+set_filters(filters_data)
 
 
 def launch_driver():
+    filters_df = get_filters()
+
     # Automatically find the ChromeDriver path
     chrome_driver_path = os.path.abspath("Resources/chromedriver.exe")
 
@@ -22,7 +29,13 @@ def launch_driver():
     service = Service(chrome_driver_path)
     driver = webdriver.Chrome(service=service, options=options)
 
-    login_page(driver)
+    # Extracting values
+    platform = filters_df.get('Platform', [None])[0]
+
+    if platform == 'LinkedIn':
+        go_to_linkedin(driver)
+    elif platform == 'Handshake':
+        pass
 
     # Close the browser (optional)
     driver.quit()

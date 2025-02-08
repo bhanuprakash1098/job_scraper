@@ -6,21 +6,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from utils.get_filters import *
-
-filters_df = extract_filters()
-
-# Extracting values
-job_title = filters_df.get('Job title', [None])[0]  # Extract first value if exists
-location = filters_df.get('Location', [None])[0]
-sort_by = filters_df.get('Sort by', [None])[0]
-date_posted = filters_df.get('Date posted', [None])[0]
-experience_levels = filters_df.get('Experience level', [])  # Keep as list
-job_types = filters_df.get('Job type', [])  # Keep as list
-remotes = filters_df.get('Remote', [])  # Keep as list
+from utils.data_store import get_filters
 
 
-def login_page(driver):
+def go_to_linkedin(driver):
     # Create a ConfigParser object
     config = configparser.ConfigParser()
 
@@ -48,7 +37,16 @@ def login_page(driver):
 
 
 def navigate_to_jobs(driver):
-    global job_title, location, sort_by, date_posted, experience_levels, job_types, remotes
+    filters_df = get_filters()
+
+    # Extracting values
+    job_title = filters_df.get('Job title', [None])[0]  # Extract first value if exists
+    location = filters_df.get('Location', [None])[0]
+    sort_by = filters_df.get('Sort by', [None])[0]
+    date_posted = filters_df.get('Date posted', [None])[0]
+    experience_levels = filters_df.get('Experience level', [])  # Keep as list
+    job_types = filters_df.get('Job type', [])  # Keep as list
+    remotes = filters_df.get('Remote', [])  # Keep as list
 
     # Click on the navigation menu item
     driver.find_element(By.XPATH, '/html/body/div[6]/header/div/nav/ul/li[3]/a').click()
